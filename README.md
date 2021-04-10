@@ -5,8 +5,7 @@
 an API for a local business lookup. The API will list restaurants and shops in Portland Oregon.
 
 ### Known Bugs
--API Versioning in .Net Core was started but seems to be breaking the project and needs to
-be finished in order to complete the projects MVP goals. 
+-API Versioning in .Net Core was started but will not be offered in the applications current state.  See instructions for intended usage though down below under "versioning".
 
 ### Install .NET Core
 * Confirm you have installed .NET installed - this will provide access to the C# language
@@ -94,6 +93,60 @@ https://localhost:5000/api/businesses/1
         "businessSeating": "in/out"
     }
 ```
+
+### VERSIONING
+
+This project was intended to have versioning capability using Microsoft.AspNetCore.Mvc.Versioning.
+In the projects Home controller would look like this.
+```
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+ 
+namespace ApiVersioningSampleApp.Controllers
+{
+[ApiVersion("1.0")]   ------VERSION 1
+[Route("api/Values")]
+public class ValuesV1Controller : Controller
+{
+// GET api/values
+[HttpGet]
+public IEnumerable<string> Get()
+{
+return new string[] { "Value1 from Version 1", "value2 from Version 1" };
+}
+}
+ 
+[ApiVersion("2.0")]  ------VERSION 2
+[Route("api/Values")]
+public class ValuesV2Controller : Controller
+{
+// GET api/values
+[HttpGet]
+public IEnumerable<string> Get()
+{
+return new string[] { "value1 from Version 2", "value2 from Version 2" };
+}
+}
+}
+
+
+```
+- an attribute [ApiVersion(“1.0”)] for Version 1 is created.
+- an attribute [ApiVersion(“2.0”)] for Version 2 is created.
+- the Get value is changed to understand which version is getting called
+- run the application and see the Version 1 API is getting because when we do not specify any specific version, default version (1.0 in our case) would be called:
+
+### directions to see versions
+specify in the query at the local host: /api/values?api-version=1.0 or /api/values?api-version=2.0
+and receive ["value from version #", "value#"]
+or 
+you can change the route to [Route(“api/{v:apiVersion}/Values”)] then 
+specify in the query at the local host:/api/2.0/values to receive ["value from version #", "value#"].
+
+
 
 ## Technologies Used
 * C#
